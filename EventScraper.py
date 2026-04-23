@@ -87,10 +87,23 @@ def get_fight_info(fight_url, event_id):
     
     print(weight_class_id)
 
+    #Get fight winner id
+    red_fighter_status = driver.find_elements(By.CLASS_NAME, "b-fight-details__person-status")[0].text.strip()
+    match red_fighter_status:
+        case "W":
+            winner_ID = red_fighter_ID
+        case "L":
+            winner_ID = blue_fighter_ID
+        case "D":
+            #If there is a draw, set the winner ID null
+            winner_ID = "\\N"
+    
+    print(winner_ID)
+
 
     #FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
 
-    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id]
+    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id, winner_ID]
 
 def get_fighter_id (fighter_element):
     return fighter_element.get_attribute("href").split("/")[-1]
