@@ -51,10 +51,46 @@ def get_fight_info(fight_url, event_id):
     print(red_fighter_ID)
     print(blue_fighter_ID)
 
+    #Get weightclass
+    weight_class_text = driver.find_element(By.CLASS_NAME, "b-fight-details__fight-title").text.replace("UFC", "").replace("BOUT", "").replace("TITLE", "").strip()
+    match weight_class_text:
+        case "FLYWEIGHT":
+            weight_class_id = 1
+        case "BANTAMWEIGHT":
+            weight_class_id = 2
+        case "FEATHERWEIGHT":
+            weight_class_id = 3
+        case "LIGHTWEIGHT":
+            weight_class_id = 4
+        case "WELTERWEIGHT":
+            weight_class_id = 5
+        case "MIDDLEWEIGHT":
+            weight_class_id = 6
+        case "LIGHT HEAVYWEIGHT":
+            weight_class_id = 7
+        case "HEAVYWEIGHT":
+            weight_class_id = 8
+        case "WOMEN'S STRAWWEIGHT":
+            weight_class_id = 9
+        case "WOMEN'S FLYWEIGHT":
+            weight_class_id = 10
+        case "WOMEN'S BANTAMWEIGHT":
+            weight_class_id = 11
+        case "WOMEN'S FEATHERWEIGHT":
+            weight_class_id = 12
+        case "CATCH WEIGHT":
+            weight_class_id = 13
+        case "OPEN WEIGHT":
+            weight_class_id = 14
+        case _:
+            raise Exception("Unkown weight class: " + weight_class_text)
+    
+    print(weight_class_id)
+
 
     #FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
 
-    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID]
+    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id]
 
 def get_fighter_id (fighter_element):
     return fighter_element.get_attribute("href").split("/")[-1]
