@@ -215,8 +215,6 @@ def get_fight_info(fight_url, event_id):
         By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[5]/span"
     ).text.strip()
 
-    # FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
-
     return [
         fight_ID,
         event_id,
