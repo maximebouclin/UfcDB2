@@ -142,7 +142,7 @@ def get_fight_info(fight_url, event_id):
     )
     print(round_ended)
 
-    # Get strike stats
+    # Get red strike stats
     red_sig_strikes = (
         driver.find_element(
             By.XPATH, "/html/body/section/div/div/table/tbody/tr/td[2]/p[1]"
@@ -187,6 +187,57 @@ def get_fight_info(fight_url, event_id):
     print(red_sub_attempts)
     print(red_control_secs)
 
+    # Get blue strike stats
+    blue_sig_strikes = (
+        driver.find_element(
+            By.XPATH, "/html/body/section/div/div/table/tbody/tr/td[2]/p[2]"
+        )
+        .text.strip()
+        .replace(" of ", " ")
+        .split(" ")
+    )
+    blue_sig_strikes_landed = blue_sig_strikes[0]
+    blue_sig_strikes_attempted = blue_sig_strikes[1]
+
+    blue_takedowns = (
+        driver.find_element(
+            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[6]/p[2]"
+        )
+        .text.strip()
+        .replace(" of ", " ")
+        .split(" ")
+    )
+    blue_takedowns_landed = blue_takedowns[0]
+    blue_takedowns_attempted = blue_takedowns[1]
+
+    blue_sub_attempts = driver.find_element(
+        By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[8]/p[2]"
+    ).text.strip()
+
+    blue_control_mins_and_secs = (
+        driver.find_element(
+            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[10]/p[2]"
+        )
+        .text.strip()
+        .split(":")
+    )
+    blue_control_secs = int(blue_control_mins_and_secs[0]) * 60 + int(
+        blue_control_mins_and_secs[1]
+    )
+
+    print(blue_sig_strikes_landed)
+    print(blue_sig_strikes_attempted)
+    print(blue_takedowns_landed)
+    print(blue_takedowns_attempted)
+    print(blue_sub_attempts)
+    print(blue_control_secs)
+
+    # Get referee name
+    referee_name = driver.find_element(
+        By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[5]/span"
+    ).text.strip()
+    print(referee_name)
+
     # FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
 
     return [
@@ -199,6 +250,19 @@ def get_fight_info(fight_url, event_id):
         outcome_method,
         round_ended,
         is_championship_fight,
+        red_sig_strikes_landed,
+        red_sig_strikes_attempted,
+        red_takedowns_landed,
+        red_takedowns_attempted,
+        red_sub_attempts,
+        red_control_secs,
+        blue_sig_strikes_landed,
+        blue_sig_strikes_attempted,
+        blue_takedowns_landed,
+        blue_takedowns_attempted,
+        blue_sub_attempts,
+        blue_control_secs,
+        referee_name,
     ]
 
 
@@ -301,7 +365,7 @@ with (
     fight_writer = csv.writer(fight_file)
     fight_writer.writerow(
         [
-            "ID",
+            "fight_ID",
             "event_ID",
             "red_fighter_ID",
             "blue_fighter_ID",
