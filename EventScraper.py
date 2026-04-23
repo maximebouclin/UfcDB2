@@ -105,10 +105,15 @@ def get_fight_info(fight_url, event_id):
 
     print(outcome_method)
 
+    #Get round ended
+    round_ended = driver.find_element(By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[2]").text.replace("ROUND:", "").strip()
+
+    print(round_ended)
+
 
     #FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
 
-    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id, winner_ID, outcome_method]
+    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id, winner_ID, outcome_method, round_ended]
 
 def get_fighter_id (fighter_element):
     return fighter_element.get_attribute("href").split("/")[-1]
