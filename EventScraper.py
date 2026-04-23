@@ -100,10 +100,15 @@ def get_fight_info(fight_url, event_id):
     
     print(winner_ID)
 
+    #Get outcome method
+    outcome_method = driver.find_element(By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[1]").text.replace("METHOD:", "").strip()
+
+    print(outcome_method)
+
 
     #FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
 
-    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id, winner_ID]
+    return [fight_ID, event_id, red_fighter_ID, blue_fighter_ID, weight_class_id, winner_ID, outcome_method]
 
 def get_fighter_id (fighter_element):
     return fighter_element.get_attribute("href").split("/")[-1]
