@@ -1,0 +1,1 @@
+    print(fighter_id)
