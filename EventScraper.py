@@ -46,7 +46,6 @@ def get_fight_info(fight_url, event_id):
     # Get fight ID
     current_url = driver.current_url
     fight_ID = current_url.split("/")[-1]  # id is the last part of the url
-    print(fight_ID)
 
     # Get fighter ID's
     fighter_elements = driver.find_elements(
@@ -55,8 +54,6 @@ def get_fight_info(fight_url, event_id):
     fighterIDs = list(map(get_fighter_id, fighter_elements))
     red_fighter_ID = fighterIDs[0]
     blue_fighter_ID = fighterIDs[1]
-    print(red_fighter_ID)
-    print(blue_fighter_ID)
 
     # Get weightclass and find out if title fight
     weight_class_text = driver.find_element(
@@ -67,7 +64,6 @@ def get_fight_info(fight_url, event_id):
         is_championship_fight = "true"
     else:
         is_championship_fight = "false"
-    print(is_championship_fight)
 
     weight_class_text = (
         weight_class_text.replace("UFC", "")
@@ -106,7 +102,6 @@ def get_fight_info(fight_url, event_id):
             weight_class_id = 14
         case _:
             raise Exception("Unkown weight class: " + weight_class_text)
-    print(weight_class_id)
 
     # Get fight winner id
     red_fighter_status = driver.find_elements(
@@ -120,7 +115,6 @@ def get_fight_info(fight_url, event_id):
         case "D":
             # If there is a draw, set the winner ID null
             winner_ID = "\\N"
-    print(winner_ID)
 
     # Get outcome method
     outcome_method = (
@@ -130,7 +124,6 @@ def get_fight_info(fight_url, event_id):
         .text.replace("METHOD:", "")
         .strip()
     )
-    print(outcome_method)
 
     # Get round ended
     round_ended = (
@@ -140,7 +133,6 @@ def get_fight_info(fight_url, event_id):
         .text.replace("ROUND:", "")
         .strip()
     )
-    print(round_ended)
 
     # Get red strike stats
     red_sig_strikes = (
@@ -180,13 +172,6 @@ def get_fight_info(fight_url, event_id):
         red_control_mins_and_secs[1]
     )
 
-    print(red_sig_strikes_landed)
-    print(red_sig_strikes_attempted)
-    print(red_takedowns_landed)
-    print(red_takedowns_attempted)
-    print(red_sub_attempts)
-    print(red_control_secs)
-
     # Get blue strike stats
     blue_sig_strikes = (
         driver.find_element(
@@ -225,18 +210,10 @@ def get_fight_info(fight_url, event_id):
         blue_control_mins_and_secs[1]
     )
 
-    print(blue_sig_strikes_landed)
-    print(blue_sig_strikes_attempted)
-    print(blue_takedowns_landed)
-    print(blue_takedowns_attempted)
-    print(blue_sub_attempts)
-    print(blue_control_secs)
-
     # Get referee name
     referee_name = driver.find_element(
         By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[5]/span"
     ).text.strip()
-    print(referee_name)
 
     # FOR NEXT TIME, KEEP GETTING THE OTHER FIGHT STATS FROM HERE
 
@@ -285,18 +262,15 @@ def get_event_info(event_url):
 
     # Get event ID
     event_id = get_event_id(event_url)
-    print(event_id)
 
     # Get event name
     event_name = driver.find_element(By.CLASS_NAME, "b-content__title-highlight").text
-    print(event_name)
 
     # Get event details box
     event_details = driver.find_elements(By.CLASS_NAME, "b-list__box-list-item")
 
     # Get event location
     event_location = event_details[1].text.strip("LOCATION:").strip()
-    print(event_location)
 
     # Get event date
     event_date_string = event_details[0].text.strip("DATE:").strip()
@@ -339,8 +313,6 @@ def get_event_info(event_url):
             raise NoSuchElementException("Debut month not in expected format")
 
     event_date = eventDobYear + "-" + eventDobMonth + "-" + eventDobDay
-
-    print(event_date)
 
     return [event_id, event_name, event_location, event_date]
 
