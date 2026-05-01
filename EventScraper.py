@@ -69,9 +69,9 @@ def get_fight_info(fight_url, event_id):
         weight_class_id = "\\N"
     else:
         if "TITLE" in weight_class_text:
-            is_championship_fight = "true"
+            is_championship_fight = "1"
         else:
-            is_championship_fight = "false"
+            is_championship_fight = "0"
 
     # Get weight class ID
     if "FLYWEIGHT" in weight_class_text:

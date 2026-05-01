@@ -17,7 +17,7 @@ CREATE TABLE event (
 -- Create fight table
 DROP TABLE IF EXISTS fight;
 CREATE TABLE fight (
-	fight_ID INT AUTO_INCREMENT,
+	fight_ID VARCHAR(100),
     event_ID VARCHAR(100),
     red_fighter_ID VARCHAR(100),
     blue_fighter_ID VARCHAR(100),
@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS weight_class;
 CREATE TABLE weight_class (
 	weight_class_ID INT AUTO_INCREMENT,
     weight_class_name VARCHAR(50),
-    weight_class_limit_kg DECIMAL(5,2) CONSTRAINT valid_weight_class CHECK(weight_class_limit_kg >= 30 AND weight_class_limit_kg <= 500),
+    weight_class_limit_kg DECIMAL(5,2),
     UNIQUE(weight_class_name),
     PRIMARY KEY(weight_class_ID)
 );
@@ -77,10 +77,10 @@ ALTER TABLE fight
     ADD FOREIGN KEY (winner_ID) REFERENCES fighter(fighter_ID);
 
 -- LOAD EVENT DATA
-LOAD DATA LOCAL INFILE '/Users/maximebouclin/Courses/csci2141/UfcDB_Repo/UfcDB2/event_info.csv'
+LOAD DATA LOCAL INFILE '/Users/maximebouclin/Projects/UfcDB2/data_files/event_info.csv'
 INTO TABLE event
 FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
@@ -100,21 +100,22 @@ INSERT INTO weight_class (weight_class_name, weight_class_limit_kg)
         ("Women's Flyweight", 56.7),
         ("Women's Bantamweight", 61.2),
         ("Women's Featherweight", 65.8),
+        ("Catch Weight", NULL),
         ("Open Weight", NULL);
         
 -- LOAD FIGHTER DATA
-LOAD DATA LOCAL INFILE '/Users/maximebouclin/Courses/csci2141/UfcDB_Repo/UfcDB2/fighter_info.csv'
+LOAD DATA LOCAL INFILE '/Users/maximebouclin/Projects/UfcDB2/data_files/fighter_info.csv'
 INTO TABLE fighter
 FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+OPTIONALLY ENCLOSED BY '"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
 -- LOAD FIGHT DATA
-LOAD DATA LOCAL INFILE '/Users/maximebouclin/Courses/csci2141/UfcDB2_Repo/3b/fight_data.csv'
+LOAD DATA LOCAL INFILE '/Users/maximebouclin/Projects/UfcDB2/data_files/fight_info.csv'
 INTO TABLE fight
 FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
-(event_ID, red_fighter_ID, blue_fighter_ID, fight_weight_class_ID, winner_ID, 
- outcome_method, round_ended, is_championship_fight);
+(fight_ID,event_ID,red_fighter_ID,blue_fighter_ID,fight_weight_class_ID,winner_ID,outcome_method,round_ended,is_championship_fight,red_sig_strikes_landed,red_sig_strikes_attempted,red_takedowns_landed,red_takedowns_attempted,red_sub_attempts,red_control_secs,blue_sig_strikes_landed,blue_sig_strikes_attempted,blue_takedowns_landed,blue_takedowns_attempted,blue_sub_attempts,blue_control_secs,referee_name);
