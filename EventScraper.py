@@ -56,164 +56,213 @@ def get_fight_info(fight_url, event_id):
     blue_fighter_ID = fighterIDs[1]
 
     # Get weightclass and find out if title fight
-    weight_class_text = driver.find_element(
-        By.CLASS_NAME, "b-fight-details__fight-title"
-    ).text
+    try:
+        weight_class_text = driver.find_element(
+            By.CLASS_NAME, "b-fight-details__fight-title"
+        ).text
+    except Exception:
+        weight_class_text = "\\N"
 
-    if "TITLE" in weight_class_text:
-        is_championship_fight = "true"
+    # Check if title fight
+    if weight_class_text == "\\N":
+        is_championship_fight = "\\N"
+        weight_class_id = "\\N"
     else:
-        is_championship_fight = "false"
+        if "TITLE" in weight_class_text:
+            is_championship_fight = "true"
+        else:
+            is_championship_fight = "false"
 
-    weight_class_text = (
-        weight_class_text.replace("UFC", "")
-        .replace("BOUT", "")
-        .replace("TITLE", "")
-        .strip()
-    )
-    match weight_class_text:
-        case "FLYWEIGHT":
-            weight_class_id = 1
-        case "BANTAMWEIGHT":
-            weight_class_id = 2
-        case "FEATHERWEIGHT":
-            weight_class_id = 3
-        case "LIGHTWEIGHT":
-            weight_class_id = 4
-        case "WELTERWEIGHT":
-            weight_class_id = 5
-        case "MIDDLEWEIGHT":
-            weight_class_id = 6
-        case "LIGHT HEAVYWEIGHT":
-            weight_class_id = 7
-        case "HEAVYWEIGHT":
-            weight_class_id = 8
-        case "WOMEN'S STRAWWEIGHT":
-            weight_class_id = 9
-        case "WOMEN'S FLYWEIGHT":
-            weight_class_id = 10
-        case "WOMEN'S BANTAMWEIGHT":
-            weight_class_id = 11
-        case "WOMEN'S FEATHERWEIGHT":
-            weight_class_id = 12
-        case "CATCH WEIGHT":
-            weight_class_id = 13
-        case "OPEN WEIGHT":
-            weight_class_id = 14
-        case _:
-            raise Exception("Unkown weight class: " + weight_class_text)
+    # Get weight class ID
+    if "FLYWEIGHT" in weight_class_text:
+        weight_class_id = 1
+    elif "BANTAMWEIGHT" in weight_class_text:
+        weight_class_id = 2
+    elif "FEATHERWEIGHT" in weight_class_text:
+        weight_class_id = 3
+    elif "LIGHTWEIGHT" in weight_class_text:
+        weight_class_id = 4
+    elif "WELTERWEIGHT" in weight_class_text:
+        weight_class_id = 5
+    elif "MIDDLEWEIGHT" in weight_class_text:
+        weight_class_id = 6
+    elif "LIGHT HEAVYWEIGHT" in weight_class_text:
+        weight_class_id = 7
+    elif "HEAVYWEIGHT" in weight_class_text:
+        weight_class_id = 8
+    elif "WOMEN'S STRAWWEIGHT" in weight_class_text:
+        weight_class_id = 9
+    elif "WOMEN'S FLYWEIGHT" in weight_class_text:
+        weight_class_id = 10
+    elif "WOMEN'S BANTAMWEIGHT" in weight_class_text:
+        weight_class_id = 11
+    elif "WOMEN'S FEATHERWEIGHT" in weight_class_text:
+        weight_class_id = 12
+    elif "CATCH WEIGHT" in weight_class_text:
+        weight_class_id = 13
+    elif "OPEN WEIGHT" in weight_class_text:
+        weight_class_id = 14
+    else:
+        weight_class_id = 14
 
     # Get fight winner id
-    red_fighter_status = driver.find_elements(
-        By.CLASS_NAME, "b-fight-details__person-status"
-    )[0].text.strip()
+    try:
+        red_fighter_status = driver.find_elements(
+            By.CLASS_NAME, "b-fight-details__person-status"
+        )[0].text.strip()
+    except Exception:
+        red_fighter_status = "\\N"
+
     match red_fighter_status:
         case "W":
             winner_ID = red_fighter_ID
         case "L":
             winner_ID = blue_fighter_ID
-        case "D":
+        case "D" | "NC":
             # If there is a draw, set the winner ID null
+            winner_ID = "\\N"
+        case _:
             winner_ID = "\\N"
 
     # Get outcome method
-    outcome_method = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[1]"
+    try:
+        outcome_method = (
+            driver.find_element(
+                By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[1]"
+            )
+            .text.replace("METHOD:", "")
+            .strip()
         )
-        .text.replace("METHOD:", "")
-        .strip()
-    )
+    except Exception:
+        outcome_method = "\\N"
 
     # Get round ended
-    round_ended = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[2]"
+    try:
+        round_ended = (
+            driver.find_element(
+                By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[2]"
+            )
+            .text.replace("ROUND:", "")
+            .strip()
         )
-        .text.replace("ROUND:", "")
-        .strip()
-    )
+    except Exception:
+        round_ended = "\\N"
 
     # Get red strike stats
-    red_sig_strikes = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/table/tbody/tr/td[2]/p[1]"
+    try:
+        red_sig_strikes = (
+            driver.find_element(
+                By.XPATH, "/html/body/section/div/div/table/tbody/tr/td[2]/p[1]"
+            )
+            .text.strip()
+            .replace(" of ", " ")
+            .split(" ")
         )
-        .text.strip()
-        .replace(" of ", " ")
-        .split(" ")
-    )
-    red_sig_strikes_landed = red_sig_strikes[0]
-    red_sig_strikes_attempted = red_sig_strikes[1]
+        red_sig_strikes_landed = red_sig_strikes[0]
+        red_sig_strikes_attempted = red_sig_strikes[1]
+    except Exception:
+        red_sig_strikes_landed = "\\N"
+        red_sig_strikes_attempted = "\\N"
 
-    red_takedowns = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[6]/p[1]"
+    try:
+        red_takedowns = (
+            driver.find_element(
+                By.XPATH,
+                "/html/body/section/div/div/section[2]/table/tbody/tr/td[6]/p[1]",
+            )
+            .text.strip()
+            .replace(" of ", " ")
+            .split(" ")
         )
-        .text.strip()
-        .replace(" of ", " ")
-        .split(" ")
-    )
-    red_takedowns_landed = red_takedowns[0]
-    red_takedowns_attempted = red_takedowns[1]
+        red_takedowns_landed = red_takedowns[0]
+        red_takedowns_attempted = red_takedowns[1]
+    except Exception:
+        red_takedowns_landed = "\\N"
+        red_takedowns_attempted = "\\N"
 
-    red_sub_attempts = driver.find_element(
-        By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[8]/p[1]"
-    ).text.strip()
+    try:
+        red_sub_attempts = driver.find_element(
+            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[8]/p[1]"
+        ).text.strip()
+    except Exception:
+        red_sub_attempts = "\\N"
 
-    red_control_mins_and_secs = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[10]/p[1]"
+    try:
+        red_control_mins_and_secs = (
+            driver.find_element(
+                By.XPATH,
+                "/html/body/section/div/div/section[2]/table/tbody/tr/td[10]/p[1]",
+            )
+            .text.strip()
+            .split(":")
         )
-        .text.strip()
-        .split(":")
-    )
-    red_control_secs = int(red_control_mins_and_secs[0]) * 60 + int(
-        red_control_mins_and_secs[1]
-    )
+        red_control_secs = int(red_control_mins_and_secs[0]) * 60 + int(
+            red_control_mins_and_secs[1]
+        )
+    except Exception:
+        red_control_secs = "\\N"
 
     # Get blue strike stats
-    blue_sig_strikes = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/table/tbody/tr/td[2]/p[2]"
+    try:
+        blue_sig_strikes = (
+            driver.find_element(
+                By.XPATH, "/html/body/section/div/div/table/tbody/tr/td[2]/p[2]"
+            )
+            .text.strip()
+            .replace(" of ", " ")
+            .split(" ")
         )
-        .text.strip()
-        .replace(" of ", " ")
-        .split(" ")
-    )
-    blue_sig_strikes_landed = blue_sig_strikes[0]
-    blue_sig_strikes_attempted = blue_sig_strikes[1]
+        blue_sig_strikes_landed = blue_sig_strikes[0]
+        blue_sig_strikes_attempted = blue_sig_strikes[1]
+    except Exception:
+        blue_sig_strikes_landed = "\\N"
+        blue_sig_strikes_attempted = "\\N"
 
-    blue_takedowns = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[6]/p[2]"
+    try:
+        blue_takedowns = (
+            driver.find_element(
+                By.XPATH,
+                "/html/body/section/div/div/section[2]/table/tbody/tr/td[6]/p[2]",
+            )
+            .text.strip()
+            .replace(" of ", " ")
+            .split(" ")
         )
-        .text.strip()
-        .replace(" of ", " ")
-        .split(" ")
-    )
-    blue_takedowns_landed = blue_takedowns[0]
-    blue_takedowns_attempted = blue_takedowns[1]
+        blue_takedowns_landed = blue_takedowns[0]
+        blue_takedowns_attempted = blue_takedowns[1]
+    except Exception:
+        blue_takedowns_landed = "\\N"
+        blue_takedowns_attempted = "\\N"
 
-    blue_sub_attempts = driver.find_element(
-        By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[8]/p[2]"
-    ).text.strip()
+    try:
+        blue_sub_attempts = driver.find_element(
+            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[8]/p[2]"
+        ).text.strip()
+    except Exception:
+        blue_sub_attempts = "\\N"
 
-    blue_control_mins_and_secs = (
-        driver.find_element(
-            By.XPATH, "/html/body/section/div/div/section[2]/table/tbody/tr/td[10]/p[2]"
+    try:
+        blue_control_mins_and_secs = (
+            driver.find_element(
+                By.XPATH,
+                "/html/body/section/div/div/section[2]/table/tbody/tr/td[10]/p[2]",
+            )
+            .text.strip()
+            .split(":")
         )
-        .text.strip()
-        .split(":")
-    )
-    blue_control_secs = int(blue_control_mins_and_secs[0]) * 60 + int(
-        blue_control_mins_and_secs[1]
-    )
+        blue_control_secs = int(blue_control_mins_and_secs[0]) * 60 + int(
+            blue_control_mins_and_secs[1]
+        )
+    except Exception:
+        blue_control_secs = "\\N"
 
     # Get referee name
-    referee_name = driver.find_element(
-        By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[5]/span"
-    ).text.strip()
+    try:
+        referee_name = driver.find_element(
+            By.XPATH, "/html/body/section/div/div/div[2]/div[2]/p[1]/i[5]/span"
+        ).text.strip()
+    except Exception:
+        referee_name = "\\N"
 
     return [
         fight_ID,
@@ -327,8 +376,8 @@ driver = webdriver.Chrome(service=service)
 
 # Get the info of each event and write it to a csv file
 with (
-    open("event_info.csv", "w") as event_file,
-    open("fight_info.csv", "w") as fight_file,
+    open("event_info.csv", "a") as event_file,
+    open("fight_info.csv", "a") as fight_file,
 ):
     event_writer = csv.writer(event_file)
     event_writer.writerow(["ID", "Name", "Location", "Date"])
