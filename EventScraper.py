@@ -376,8 +376,8 @@ driver = webdriver.Chrome(service=service)
 
 # Get the info of each event and write it to a csv file
 with (
-    open("event_info.csv", "a") as event_file,
-    open("fight_info.csv", "a") as fight_file,
+    open("data_files/event_info.csv", "a") as event_file,
+    open("data_files/fight_info.csv", "a") as fight_file,
 ):
     event_writer = csv.writer(event_file)
     event_writer.writerow(["ID", "Name", "Location", "Date"])

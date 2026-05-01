@@ -139,7 +139,7 @@ def get_fighter_info():
 
 #START OF CODE TO BE EXECUTED ON RUN
 #Get the info of each fighter and write it to a csv file
-with open('fighter_info.csv', 'w') as file:
+with open('data_files/fighter_info.csv', 'w') as file:
     writer = csv.writer(file)
     writer.writerow(["ID", "Name", "Nickname", "Height", "Weight", "Reach", "Stance", "DOB"])
     #Get all the fighter links
