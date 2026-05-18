@@ -64,10 +64,8 @@ DevOps / Infrastructure
 ```text
 UfcDB2/
 ├── FighterScraper.py          # Scrapes UFC fighter data
-├── FightScraper.py            # Scrapes UFC fight data
-├── EventScraper.py            # Scrapes UFC event data
+├── EventScraper.py            # Scrapes UFC event and fight data
 ├── CREATE_UFCBD2.sql          # Creates the MySQL database schema
-├── docker-compose.yml         # Docker configuration
 └── README.md
 ```
 
